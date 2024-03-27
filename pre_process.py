@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import datetime
+import calendar
 
 
 def fill_and_convert_julian_to_gregorian(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
@@ -120,7 +121,7 @@ def get_season_optimized(date):
     return season
 
 
-def preprocess_time_cols(df):
+def pre_process_time_cols(df):
 
     # convering from julian to gregorian
     # this if for time when the fire was discover
@@ -165,11 +166,25 @@ def preprocess_time_cols(df):
     df = df.drop(['CONT_TIME_DELTA', 'DISCOVERY_TIME_DELTA',
                  'ADJUSTED_TIME_DIFF_MINUTES', 'CATEGORY_CONT_TIME', 'DAYS_DIFFERENCE'], axis=1)
 
-    df = df.drop(columns=['CONT_DATE', 'CONT_DOY', 'CONT_TIME'])
+    df = df.drop(columns=['CONT_DATE', 'CONT_DOY',
+                 'CONT_TIME', 'DISCOVERY_DOY', 'disc_time'])
 
-    df['d_of_month'] = df['DISCOVERY_DATE'].dt.day
-    df['month'] = df['DISCOVERY_DATE'].dt.month
+    df['discovery_d_of_month'] = df['DISCOVERY_DATE'].dt.day
+    df['discovery_month'] = df['DISCOVERY_DATE'].dt.month
     df = df.drop(['DISCOVERY_DATE'], axis=1)
     df = df.drop(['DISCOVERY_TIME'], axis=1)
+
+    def day_suffix(day):
+        if 0 < day and day < 4:
+            return str(day) + ["st", "nd", "rd"][day - 1]
+        elif day < 32:
+            return str(day) + "th"
+        else:
+            raise Exception("Invalid day!")
+
+    # Combine month and day with textual representations and correct suffixes
+    df['date_text'] = df.apply(
+        lambda x: calendar.month_name[x['discovery_month']] + " " +
+        day_suffix(x['discovery_d_of_month']), axis=1)
 
     return df

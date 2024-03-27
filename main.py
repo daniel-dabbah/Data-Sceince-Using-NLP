@@ -20,23 +20,25 @@ cols_to_exclude = ['Unnamed: 0', 'OBJECTID', 'FOD_ID', 'FPA_ID',
 cols_to_use = ['SOURCE_SYSTEM_TYPE', 'FIRE_YEAR', 'DISCOVERY_DATE',
                'DISCOVERY_DOY', 'DISCOVERY_TIME', 'STAT_CAUSE_DESCR',
                'CONT_DATE', 'CONT_DOY', 'CONT_TIME', 'FIRE_SIZE',
-               'FIRE_SIZE_CLASS', 'LATITUDE', 'LONGITUDE', 'STATE', ]
+               'FIRE_SIZE_CLASS',  'STATE', ]
 
 
 cols_to_check_value_counts = ['SOURCE_SYSTEM', 'NWCG_REPORTING_AGENCY',
                               'NWCG_REPORTING_UNIT_ID',
                               'NWCG_REPORTING_UNIT_NAME', 'SOURCE_REPORTING_UNIT',
                               'SOURCE_REPORTING_UNIT_NAME', 'FIRE_CODE',
-                              'FIRE_NAME', 'OWNER_DESCR', 'COUNTY', 'FIPS_CODE', 'FIPS_NAME'
+                              'FIRE_NAME', 'OWNER_DESCR', 'COUNTY', 'FIPS_CODE', 'FIPS_NAME',
+                              'LATITUDE', 'LONGITUDE'
                               ]
 
 if __name__ == '__main__':
 
     df = pd.read_csv("data/train.csv.gz", usecols=cols_to_use)
+    b = df[:10]
     df = pre_process.pre_process_time_cols(df)
-    a = df[:10]
-    # check Avi affected features
-    # remove unwanted features
-    # make month and day to a string.
+    a = df[:500]
+
+    # TODO: later improve the model by add text features from cols_to_check_values_counts
+    # finish make month and day to a string.
     # maybe use fire size
 # len(cols_to_check_value_counts) + len(cols_to_exclude) + len(cols_to_use)
