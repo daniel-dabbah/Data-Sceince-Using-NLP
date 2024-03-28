@@ -39,6 +39,7 @@ if __name__ == '__main__':
     a = df[:500]
 
     # TODO: later improve the model by add text features from cols_to_check_values_counts
-    # finish make month and day to a string.
+    # finish state col and decide what to do with fire size values.
+    # create one line of text
     # maybe use fire size
 # len(cols_to_check_value_counts) + len(cols_to_exclude) + len(cols_to_use)

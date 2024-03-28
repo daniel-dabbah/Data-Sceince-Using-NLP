@@ -121,6 +121,22 @@ def get_season_optimized(date):
     return season
 
 
+# Function to convert minutes into days, hours, and minutes
+def convert_minutes_to_textual_representation(minutes):
+    days = int(minutes // 1440)
+    hours = int((minutes % 1440) // 60)
+    minutes_left = int((minutes % 1440) % 60)
+
+    result = ""
+    if days > 0:
+        result += f"{days} day{'s' if days > 1 else ''}, "
+    if hours > 0 or days > 0:  # Include hours if there are also days
+        result += f"{hours} hour{'s' if hours != 1 else ''}, "
+    result += f"{minutes_left} minute{'s' if minutes_left != 1 else ''}"
+
+    return result
+
+
 def pre_process_time_cols(df):
 
     # convering from julian to gregorian
@@ -183,8 +199,16 @@ def pre_process_time_cols(df):
             raise Exception("Invalid day!")
 
     # Combine month and day with textual representations and correct suffixes
-    df['date_text'] = df.apply(
+    df['Date'] = df.apply(
         lambda x: calendar.month_name[x['discovery_month']] + " " +
         day_suffix(x['discovery_d_of_month']), axis=1)
 
+    df = df.drop(columns=['discovery_d_of_month', 'discovery_month'])
+
+    # if the fire duration is 0, I decided to use arbitray 10 minutes duration.
+    df.loc[df['TIME_DIFF_MINUTES'] == 0] = 10
+    df['Fire duration'] = df['TIME_DIFF_MINUTES'].apply(
+        convert_minutes_to_textual_representation)
+
+    df = df.drop(columns=['TIME_DIFF_MINUTES'])
     return df
