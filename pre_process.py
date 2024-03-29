@@ -211,4 +211,33 @@ def pre_process_time_cols(df):
         convert_minutes_to_textual_representation)
 
     df = df.drop(columns=['TIME_DIFF_MINUTES'])
+
+    state_mapping = {
+        'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+        'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+        'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+        'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+        'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+        'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+        'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+        'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+        'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+        'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
+    }
+    df["STATE"] = df["STATE"].map(state_mapping)
+    df.rename(columns={'CATEGORY_DISCOVERY_TIME': 'time of day',
+              'SOURCE_SYSTEM_TYPE': 'Source System'}, inplace=True)
+
+    features_cols = [col for col in df.columns if col != 'STAT_CAUSE_DESCR']
+
+    def get_text_samle(x):
+        sample = ""
+        for col in features_cols[:-1]:
+            sample += f"{col} is: {x[col]},"
+        sample += f"{col} is: {x[col]}"
+        return sample
+
+    df["sample"] = df.apply(get_text_samle, axis=1)
+    df = df.drop(columns=features_cols)
+
     return df
