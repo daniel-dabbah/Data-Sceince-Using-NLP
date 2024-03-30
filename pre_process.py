@@ -225,15 +225,17 @@ def pre_process_time_cols(df):
         'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
     }
     df["STATE"] = df["STATE"].map(state_mapping)
-    df.rename(columns={'CATEGORY_DISCOVERY_TIME': 'time of day',
-              'SOURCE_SYSTEM_TYPE': 'Source System'}, inplace=True)
+    df.rename(columns={'CATEGORY_DISCOVERY_TIME': 'Time of day',
+              'SOURCE_SYSTEM_TYPE': 'Source System',
+                       'STATE': 'State', 'SEASON': 'Season'}, inplace=True)
 
     features_cols = [col for col in df.columns if col != 'STAT_CAUSE_DESCR']
 
     def get_text_samle(x):
         sample = ""
         for col in features_cols[:-1]:
-            sample += f"{col} is: {x[col]},"
+            sample += f"{col} is: {x[col]}, "
+        col = features_cols[-1]
         sample += f"{col} is: {x[col]}"
         return sample
 

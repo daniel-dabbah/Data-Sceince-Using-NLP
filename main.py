@@ -43,7 +43,6 @@ if __name__ == '__main__':
 
     # TODO: later improve the model by add text features from cols_to_check_values_counts
 
-    # fix caps lock
     # create hugging face data sets
     # start tokenize like they did in the book
 
