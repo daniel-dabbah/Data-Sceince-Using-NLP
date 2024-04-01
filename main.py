@@ -9,8 +9,6 @@ import torch
 import pandas as pd
 import pre_process
 
-df = pd.read_csv("data/train.csv.gz")
-
 
 cols_to_exclude = ['Unnamed: 0', 'OBJECTID', 'FOD_ID', 'FPA_ID',
                    'LOCAL_FIRE_REPORT_ID', 'LOCAL_INCIDENT_ID',
@@ -33,6 +31,9 @@ cols_to_check_value_counts = ['SOURCE_SYSTEM', 'NWCG_REPORTING_AGENCY',
 if __name__ == '__main__':
 
     df = pd.read_csv("data/train.csv.gz", usecols=cols_to_use)
+    validation = pd.read_csv("data/validation.csv.gz", usecols=cols_to_use)
+    test = pd.read_csv("data/test_1.csv.gz", usecols=cols_to_use)
+
     b = df[:10]
     df = pre_process.pre_process_time_cols(df)
     a = df[:500]
@@ -40,7 +41,8 @@ if __name__ == '__main__':
     df.columns
 
     df["sample"][0]
-
+    validation = pre_process.pre_process_time_cols(validation)
+    test = pre_process.pre_process_time_cols(test)
     # TODO: later improve the model by add text features from cols_to_check_values_counts
 
     # create hugging face data sets
