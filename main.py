@@ -44,7 +44,7 @@ if __name__ == '__main__':
     validation = pre_process.pre_process_time_cols(validation)
     test = pre_process.pre_process_time_cols(test)
     # TODO: later improve the model by add text features from cols_to_check_values_counts
-
+    k = test[:200]
     # create hugging face data sets
     # start tokenize like they did in the book
 

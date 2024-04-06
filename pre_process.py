@@ -227,9 +227,10 @@ def pre_process_time_cols(df):
     df["STATE"] = df["STATE"].map(state_mapping)
     df.rename(columns={'CATEGORY_DISCOVERY_TIME': 'Time of day',
               'SOURCE_SYSTEM_TYPE': 'Source System',
-                       'STATE': 'State', 'SEASON': 'Season'}, inplace=True)
+                       'STATE': 'State', 'SEASON': 'Season',
+                       'STAT_CAUSE_DESCR': 'label'}, inplace=True)
 
-    features_cols = [col for col in df.columns if col != 'STAT_CAUSE_DESCR']
+    features_cols = [col for col in df.columns if col != 'label']
 
     def get_text_samle(x):
         sample = ""
