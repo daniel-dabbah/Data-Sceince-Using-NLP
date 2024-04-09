@@ -231,6 +231,7 @@ def pre_process_time_cols(df):
                        'STAT_CAUSE_DESCR': 'label'}, inplace=True)
 
     features_cols = [col for col in df.columns if col != 'label']
+    df['label'] = df['label'].astype(str)
 
     def get_text_samle(x):
         sample = ""
@@ -240,7 +241,7 @@ def pre_process_time_cols(df):
         sample += f"{col} is: {x[col]}"
         return sample
 
-    df["sample"] = df.apply(get_text_samle, axis=1)
+    df["text"] = df.apply(get_text_samle, axis=1)
     df = df.drop(columns=features_cols)
 
     return df

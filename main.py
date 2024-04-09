@@ -29,10 +29,11 @@ cols_to_check_value_counts = ['SOURCE_SYSTEM', 'NWCG_REPORTING_AGENCY',
                               ]
 
 if __name__ == '__main__':
-
-    df = pd.read_csv("data/train.csv.gz", usecols=cols_to_use)
-    validation = pd.read_csv("data/validation.csv.gz", usecols=cols_to_use)
-    test = pd.read_csv("data/test_1.csv.gz", usecols=cols_to_use)
+    k = 1000
+    df = pd.read_csv("data/train.csv.gz", usecols=cols_to_use)[:9*k]
+    validation = pd.read_csv("data/validation.csv.gz",
+                             usecols=cols_to_use)[:3*k]
+    test = pd.read_csv("data/test_1.csv.gz", usecols=cols_to_use)[:k]
 
     b = df[:10]
     df = pre_process.pre_process_time_cols(df)
@@ -40,7 +41,7 @@ if __name__ == '__main__':
 
     df.columns
 
-    df["sample"][0]
+    df["text"][0]
     validation = pre_process.pre_process_time_cols(validation)
     test = pre_process.pre_process_time_cols(test)
     # TODO: later improve the model by add text features from cols_to_check_values_counts
@@ -50,3 +51,33 @@ if __name__ == '__main__':
 
 
 # len(cols_to_check_value_counts) + len(cols_to_exclude) + len(cols_to_use)
+    len(test['label'].value_counts())
+    len(validation['label'].value_counts())
+    len(df['label'].value_counts())
+
+    from datasets import Dataset, Features, ClassLabel, Value
+
+    unique_classes = sorted(df['label'].unique())
+
+    unique_classes
+    features = Features({
+        'label': ClassLabel(names=unique_classes),
+        'text': Value('string')
+        # Include other columns as needed, e.g., 'text': Value('string')
+    })
+
+    features
+    train_ds = Dataset.from_pandas(df, features=features)
+    val_ds = Dataset.from_pandas(validation, features=features)
+    test_ds = Dataset.from_pandas(test, features=features)
+
+    from datasets import DatasetDict
+
+    dataset_dict = DatasetDict({
+        'train': train_ds,
+        'validation': val_ds,
+        'test': test_ds
+    })
+
+
+dataset_dict
